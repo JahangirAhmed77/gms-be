@@ -4,13 +4,21 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import * as os from 'os';
+import * as dotenv from 'dotenv';
+
 import { BiometricService } from './biometric/biometric.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-
+  app.enableCors({
+    origin: ['https://portal.guardsos.com', 'http://localhost:3000'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
+  dotenv.config();
+  
   app.useGlobalPipes(new ValidationPipe({ 
     whitelist: true ,
      forbidNonWhitelisted: true,
