@@ -1,10 +1,12 @@
+
 export enum RolesEnum {
-    organizationAdmin = "organizationAdmin",
     superAdmin = "superAdmin",
+    organizationAdmin = "organizationAdmin",
     manager = "manager",
+    supervisor = "supervisor",
     staff = "staff",
-    supervisor = "supervisor",  
-    client = "client",  
-    guard = "guard",  
-    guardSupervisor = "epicurean$328"  
-}
+    client = "client",
+    guard = "guard",
+    guardSupervisor = "guardSupervisor",
+  }
+  

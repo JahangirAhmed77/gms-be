@@ -59,11 +59,24 @@ model Organization {
   updatedAt DateTime @updatedAt
   isActive  Boolean  @default(true)
 
+  // Existing fields
   organizationName String
   organizationLogo String?
 
-  userId          String                    @unique @db.Uuid
-  user            User                      @relation("UserOrganization", fields: [userId], references: [id], onDelete: Cascade)
+  
+  city        String
+  province    String
+  email       String   @unique
+  phoneNumber1 String
+  phoneNumber2 String?
+  addressLine1 String
+  addressLine2 String?
+
+  // Relation with User (Org Admin)
+  userId String @unique @db.Uuid
+  user   User   @relation("UserOrganization", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Existing relations
   employee        Employee[]
   guard           Guard[]
   client          Client[]

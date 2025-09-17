@@ -1,37 +1,55 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEmail, MinLength } from 'class-validator';
 import { CreateOfficeDto } from './create-office-dto';
 
-
-
-
 export class CreateOrganizationDto {
+  @IsString()
+  @IsNotEmpty()
+  organizationName: string;
 
-  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  organizationLogo?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  province: string;
+
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phoneNumber1: string;
+
+  @IsString()
+  @IsOptional()
+  phoneNumber2?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  addressLine1: string;
+
+  @IsString()
+  @IsOptional()
+  addressLine2?: string;
+
   @IsEmail()
   email: string;
 
-  @ApiProperty()
   @IsString()
-  password: string;
-
-  @ApiProperty()
-  @IsString()
+  @IsNotEmpty()
   userName: string;
 
-  @ApiProperty()
+  @IsString()
   @IsNotEmpty()
-  @IsString()
-  organizationName: string;
+  roleName: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  password: string;
+
   @IsOptional()
-  @IsString()
-  companyLogo: string;
-
-  @ApiPropertyOptional({ type: [CreateOfficeDto] })
-  @ValidateNested({ each: true }) @IsOptional() @IsArray() @Type(() => CreateOfficeDto)
-  office: CreateOfficeDto[];
+  office?: CreateOfficeDto[];
 }
-

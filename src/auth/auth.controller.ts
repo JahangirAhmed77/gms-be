@@ -1,25 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 
-@ApiTags('Auth')
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-//   @Post('signup')
-//   @ResponseMessage('user registered successfully')  
-//   signup(@Body() dto: RegisterDto) {
-//     return this.authService.signup(dto);
-//   }
+  @Post('signup')
+  @ApiOperation({ summary: 'User signup' })
+  @ResponseMessage('User registered successfully')
+  signup(@Body() dto: CreateUserDto) {
+    return this.authService.signup(dto);
+  }
 
   @Post('login')
-  @ApiOperation({ summary: 'login' })
-  @ResponseMessage('user logged in successfully')
+  @ApiOperation({ summary: 'User login' })
+  @ResponseMessage('User logged in successfully')
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }

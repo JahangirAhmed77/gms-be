@@ -1,39 +1,26 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateOfficeDto {
+  @IsString()
+  @IsNotEmpty()
+  branchName: string;
 
-  @ApiProperty()
   @IsEmail()
   email: string;
 
-  @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   province: string;
 
-  @ApiProperty()
   @IsString()
-  branchName: string;
-
-  @ApiProperty()
-  @IsString()
+  @IsNotEmpty()
   city: string;
 
-  @ApiProperty()
   @IsString()
-  address: string;
-
-  @ApiProperty()
-  @IsOptional()
-  addressOpt: string;
-
-  @ApiProperty()
   @IsNotEmpty()
-  @IsString()
   contactNumber: string;
 
-  @ApiProperty()
-  @IsOptional()
   @IsString()
-  contactNumberOpt: string;
+  @IsNotEmpty()
+  address: string;
 }

@@ -1,96 +1,66 @@
-import {
-    Injectable,
-    NotFoundException,
-    BadRequestException,
-    InternalServerErrorException,
-  } from '@nestjs/common';
-  import { PrismaService } from '../prisma/prisma.service';
-  import { Role } from '@prisma/client';
-import { handlePrismaError } from 'src/common/utils/prisma-error-handler';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '@prisma/client';
 import { RolesEnum } from 'src/common/enums/roles-enum';
-  
-  @Injectable()
-  export class RoleService {
-    constructor(private prisma: PrismaService) {}
-  
-    async create(roleName: string): Promise<Role> {
-        return await this.prisma.role.create({
-          data: { roleName },
-        });
-    }
-  
-    async findAll(){
-      try {
-        return await this.prisma.role.findMany({});
-      } catch (error) {
-        handlePrismaError(error)
-      }
-    }
 
-    async findForOrganization(){
-      try {
-        return await this.prisma.role.findMany({
-          where: {
-            roleName: {
-              notIn: [RolesEnum.superAdmin, RolesEnum.organizationAdmin, RolesEnum.guard, RolesEnum.client],
-            },
-          },
-        });
-      } catch (error) {
-        handlePrismaError(error)
-      }
-    }
-  
-    async findOne(id: string): Promise<Role> {
-      try {
-        const role = await this.prisma.role.findUnique({ where: { id } });
-        if (!role) {
-          throw new NotFoundException(`Role with ID ${id} not found`);
-        }
-        return role;
-      } catch (error) {
-        if (error instanceof NotFoundException) throw error;
-        throw new InternalServerErrorException('Failed to fetch role', { cause: error });
-      }
-    }
-    
-    async findByName(roleName: string): Promise<Role | null> {
-        return this.prisma.role.findFirst({
-          where: { roleName },
-        });
-    }
-  
-    async update(id: string, roleName?: string): Promise<Role> {
-      try {
-        const existing = await this.prisma.role.findUnique({ where: { id } });
-        if (!existing) {
-          throw new NotFoundException(`Role with ID ${id} not found`);
-        }
-  
-        return await this.prisma.role.update({
-          where: { id },
-          data: {
-            ...(roleName && { roleName }),
-          },
-        });
-      } catch (error) {
-        if (error instanceof NotFoundException) throw error;
-        throw new InternalServerErrorException('Failed to update role', { cause: error });
-      }
-    }
-  
-    async remove(id: string): Promise<Role> {
-      try {
-        const existing = await this.prisma.role.findUnique({ where: { id } });
-        if (!existing) {
-          throw new NotFoundException(`Role with ID ${id} not found`);
-        }
-  
-        return await this.prisma.role.delete({ where: { id } });
-      } catch (error) {
-        if (error instanceof NotFoundException) throw error;
-        throw new InternalServerErrorException('Failed to delete role', { cause: error });
-      }
-    }
+@Injectable()
+export class RoleService {
+  constructor(private prisma: PrismaService) {}
+
+  /** CREATE ROLE */
+  async create(roleName: string): Promise<Role> {
+    const existing = await this.prisma.role.findFirst({ where: { roleName } });
+    if (existing) throw new ConflictException(`Role '${roleName}' already exists`);
+    return this.prisma.role.create({ data: { roleName } });
   }
-  
+
+  /** GET ALL ROLES */
+  async findAll(): Promise<Role[]> {
+    return this.prisma.role.findMany({});
+  }
+
+  /** GET ROLES FOR ORGANIZATION (exclude system roles) */
+  async findForOrganization(): Promise<Role[]> {
+    return this.prisma.role.findMany({
+      where: {
+        roleName: {
+          notIn: [
+            RolesEnum.superAdmin,
+            RolesEnum.organizationAdmin,
+            RolesEnum.guard,
+            RolesEnum.client,
+          ],
+        },
+      },
+    });
+  }
+
+  /** GET ROLE BY ID */
+  async findOne(id: string): Promise<Role> {
+    const role = await this.prisma.role.findUnique({ where: { id } });
+    if (!role) throw new NotFoundException(`Role with ID ${id} not found`);
+    return role;
+  }
+
+  /** GET ROLE BY NAME */
+  async findByName(roleName: string): Promise<Role | null> {
+    return this.prisma.role.findFirst({ where: { roleName } });
+  }
+
+  /** UPDATE ROLE */
+  async update(id: string, roleName?: string): Promise<Role> {
+    const existing = await this.prisma.role.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Role with ID ${id} not found`);
+    return this.prisma.role.update({
+      where: { id },
+      data: { ...(roleName && { roleName }) },
+    });
+  }
+
+  /** DELETE ROLE */
+  async remove(id: string): Promise<Role> {
+    const existing = await this.prisma.role.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Role with ID ${id} not found`);
+    return this.prisma.role.delete({ where: { id } });
+  }
+}

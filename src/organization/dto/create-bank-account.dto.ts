@@ -1,46 +1,38 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateOrganizationBankAccountDto {
-
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   bankName?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   bankCode?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   accountNumber?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   accountTitle?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   IBAN?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   branchCode?: string;
 
-  @ApiPropertyOptional({
-  })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   branch?: string;

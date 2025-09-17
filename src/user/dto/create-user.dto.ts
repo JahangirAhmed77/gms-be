@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, IsUUID, IsOptional } from 'class-validator';
+import { IsEmail, IsString, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -19,7 +19,7 @@ export class CreateUserDto {
   @IsString()
   profileImage?: string;
 
-  @ApiProperty({ description: 'The role to assign to the user' })
+  @ApiProperty({ description: 'Role name to assign' })
   @IsString()
   roleName: string;
 }
